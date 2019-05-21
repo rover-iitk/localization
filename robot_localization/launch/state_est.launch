@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<launch>
+
+
+  <node name="bl_gps" pkg="tf2_ros" type="static_transform_publisher" args="0 0 0 0 0 0 1 base_link gps" />
+  <node name="bl_imu" pkg="tf2_ros" type="static_transform_publisher" args="0 0 0 0 0 0 1 base_link imu_link" />
+  
+<!-- Navsat Transform -->
+  <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform_node" clear_params="true" output="screen">
+    <rosparam command="load" file="$(find robot_localization)/params/navsat_transform_template.yaml" />
+
+      
+      <remap from="imu/data" to="imu/data"/>
+      <remap from="odometry/filtered" to="odometry/filtered"/>
+      <remap from="gps/fix" to="gps/fix"/>
+
+  </node>
+
+<!-- EKF Node -->
+<node pkg="robot_localization" type="ekf_localization_node" name="ekf_se">
+  <rosparam command="load" file="$(find robot_localization)/params/ekf_template.yaml" />
+</node>
+</launch>
